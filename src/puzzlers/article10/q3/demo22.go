@@ -1,9 +1,11 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
+)
 
 func main() {
-	ch1 := make(chan int, 2)
+	ch1 := make(chan int, 10)
 	// 发送方。
 	go func() {
 		for i := 0; i < 10; i++ {

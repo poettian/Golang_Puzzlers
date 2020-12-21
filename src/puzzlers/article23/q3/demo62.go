@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"log"
 	"sync"
 	"time"
@@ -35,8 +36,9 @@ func main() {
 	// recv 代表用于收信的函数。
 	recv := func(id, index int) {
 		lock.Lock()
+		fmt.Printf("recv:%d get the lock.\n", id)
 		for mailbox == 0 {
-			recvCond.Wait()
+			recvCond.Wait() // 注意：这里会阻塞住 goroutine 的执行
 		}
 		log.Printf("receiver [%d-%d]: the mailbox is full.",
 			id, index)
@@ -55,7 +57,7 @@ func main() {
 			sign <- struct{}{}
 		}()
 		for i := 1; i <= max; i++ {
-			time.Sleep(time.Millisecond * 500)
+			time.Sleep(time.Millisecond * 5500)
 			send(id, i)
 		}
 	}(0, max)

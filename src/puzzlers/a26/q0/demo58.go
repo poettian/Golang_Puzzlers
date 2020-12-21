@@ -41,15 +41,18 @@ func main() {
 			defer func() {
 				sign <- struct{}{}
 			}()
+			// 写入数据。
+			if protecting > 0 {
+				mu.Lock()
+				defer func() {
+					mu.Unlock()
+				}()
+			}
 			for j := 1; j <= max2; j++ {
 				// 准备数据。
 				header := fmt.Sprintf("\n[id: %d, iteration: %d]",
 					id, j)
 				data := fmt.Sprintf(" %d", id*j)
-				// 写入数据。
-				if protecting > 0 {
-					mu.Lock()
-				}
 				_, err := writer.Write([]byte(header))
 				if err != nil {
 					log.Printf("error: %s [%d]", err, id)
@@ -60,13 +63,11 @@ func main() {
 						log.Printf("error: %s [%d]", err, id)
 					}
 				}
-				if protecting > 0 {
-					mu.Unlock()
-				}
 			}
 		}(i, &buffer)
 	}
 
+	// 阻塞主程，直到所有的子程执行完毕
 	for i := 0; i < max1; i++ {
 		<-sign
 	}

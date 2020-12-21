@@ -1,6 +1,8 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
+)
 
 var channels = [3]chan int{
 	nil,
@@ -24,6 +26,9 @@ func main() {
 }
 
 func getNumber(i int) int {
+	//if i == 2 {
+	//	time.Sleep(time.Duration(1) * time.Second)
+	//}
 	fmt.Printf("numbers[%d]\n", i)
 	return numbers[i]
 }
